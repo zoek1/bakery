@@ -1,0 +1,57 @@
+{
+  "name": "bakery",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.8",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@uiw/react-md-editor": "^3.19.8",
+    "autoprefixer": "^10.4.13",
+    "blockies": "^0.0.2",
+    "blockies-identicon": "^0.1.0",
+    "cosmjs-types": "^0.6.0",
+    "crypto-browserify": "^3.12.0",
+    "daisyui": "^2.42.1",
+    "ethereum-blockies-base64": "^1.0.2",
+    "ethers": "^5.7.2",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "path-browserify": "^1.0.1",
+    "postcss": "^8.4.19",
+    "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.4",
+    "react-router-dom": "^6.4.5",
+    "react-scripts": "5.0.1",
+    "rehype-highlight": "^6.0.0",
+    "rehype-sanitize": "^5.0.1",
+    "tailwindcss": "^3.2.4",
+    "web-vitals": "^2.1.4",
+    "web3.storage": "^4.4.0"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

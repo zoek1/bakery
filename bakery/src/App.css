@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-base-100 {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b2) / var(--tw-bg-opacity));
+}
