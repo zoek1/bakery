@@ -29,13 +29,16 @@ const getName = async (address) => {
 }
 
 const Activity = (props) => {
-    const {event, selectedChain} = props
+    const {event} = props
     const [name, setName] = useState(event.args.sponsor);
 
     useEffect(() => {
         const _ = async () => setName(await getName(event.args.sponsor) || event.args.sponsor)
         _();
     }, [])
+    // console.log(event.args[0])
+    // const chain = chains.find(chain => event.args[0].match(new RegExp(chain.denomination, "i")))
+    // console.log(chains)
 
     return <div className="card mt-5 shadow-xl">
         <div className="card-body">
@@ -49,9 +52,11 @@ const Activity = (props) => {
                 </div>
             </div>
           <p style={{fontSize: "1.3em", marginTop: "1em"}}>{event.args.payload}</p>
-          <div className="card-actions justify-end">
-            <button className="btn btn-ghost" onClick={() => window.open(`${selectedChain.blockExplorer}tx/${event.transactionHash}`, '_blank').focus()}>See TX</button>
+            { /*
+            <div className="card-actions justify-end">
+            <button className="btn btn-ghost" onClick={() => window.open(`${chain.blockExplorer}tx/${event.transactionHash}`, '_blank').focus()}>See TX</button>
           </div>
+            */ }
         </div>
       </div>
 }
