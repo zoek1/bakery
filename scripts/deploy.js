@@ -1,7 +1,7 @@
 'use strict';
 
 require("dotenv").config();
-const { utils: { setJSON} } = require('@axelar-network/axelar-local-dev');
+const { utils: { setJSON}, testnetInfo } = require('@axelar-network/axelar-local-dev');
 const {  Wallet, getDefaultProvider } = require('ethers');
 const { utils: { deployContract } } = require('@axelar-network/axelar-local-dev');
 const BakeryExecutable = require('../artifacts/contracts/Bakery.sol/BakeryExecutable.json');
@@ -10,8 +10,8 @@ const BakeryExecutable = require('../artifacts/contracts/Bakery.sol/BakeryExecut
 async function deployBakery(chain, wallet) {
     console.log(`Deploying DistributionExecutable for ${chain.name}.`);
     const contract = await deployContract(wallet, BakeryExecutable, [chain.gateway, chain.gasReceiver]);
-    chain.distributionExecutable = contract.address;
-    console.log(`Deployed DistributionExecutable for ${chain.name} at ${chain.distributionExecutable}.`);
+    chain.bakeryExecutable = contract.address;
+    console.log(`Deployed DistributionExecutable for ${chain.name} at ${chain.bakeryExecutable}.`);
 }
 
 async function deploy(env, chains, wallet, example) {

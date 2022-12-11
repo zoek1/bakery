@@ -48,10 +48,13 @@ async function test(chains, wallet, options) {
     const approveTx = await source.usdc.approve(source.contract.address, amount);
     await approveTx.wait();
 
-    const sendTx = await source.contract.send(destination.name, destination.distributionExecutable, account, 'aUSDC', amount, {
+    const sendTx = await source.contract.send(destination.name, destination.bakeryExecutable, account, 'aUSDC', amount, "Thanks", {
         value: BigInt(Math.floor(gasLimit * gasPrice)),
     });
-    await sendTx.wait();
+
+
+    const tx =await sendTx.wait();
+    tx.events.forEach((event) => console.log(event));
 
     while (BigInt(await destination.usdc.balanceOf(account)) === balance) {
         await sleep(2000);
