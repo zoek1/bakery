@@ -1,5 +1,8 @@
 # Buy me a cookie (Bakery)
 
+[!["Buy Me A Cookie"](https://github.com/zoek1/bakery/raw/master/badge.png)](https://buymeacookie.gordian.dev/0x919d935dCa4aBC9079cfb9ABe01529581C355552)
+
+
 Give your audience an easy way to say thanks.
 
 ## Setup
@@ -40,6 +43,24 @@ node scripts/deploy.js testnet <public key>
 ## Start Server
 ```
 yarn start
+```
+
+## Badge 
+
+### Using inlined HTML
+
+<a href="https://buymeacookie.gordian.dev/0x919d935dCa4aBC9079cfb9ABe01529581C355552" target="_blank"><img src="https://github.com/zoek1/bakery/raw/master/badge.png" alt="Buy Me A Cookie" style="height: 41px !important;width: 174px !important;" ></a>
+
+```
+<a href="https://buymeacookie.gordian.dev/0x919d935dCa4aBC9079cfb9ABe01529581C355552" target="_blank"><img src="https://github.com/zoek1/bakery/raw/master/badge.png" alt="Buy Me A Cookie" style="height: 41px !important;width: 174px !important;" ></a>
+```
+
+### Using Markdown
+
+[!["Buy Me A Cookie"](https://github.com/zoek1/bakery/raw/master/badge.png)](https://buymeacookie.gordian.dev/vitalik.eth)
+
+```
+[!["Buy Me A Cookie"](https://github.com/zoek1/bakery/raw/master/badge.png)](https://buymeacookie.gordian.dev/vitalik.eth)
 ```
 
 ## Backlog
