@@ -39,10 +39,12 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
     error NotEnoughValueForGas();
 
     // event Sponsor(string chain, address indexed sponsor, address indexed recipient, string tokenSymbol, uint256 amount, string payload);
-    event Pending(uint256 timestamp, string chain, address indexed sponsor, address indexed recipient);
-    // event Done(uint256 timestamp, string chain, address indexed sponsor, address indexed recipient);
-    // event PendingBio(uint256 timestamp, address indexed user);
-    // event DoneBio(uint256 timestamp, address indexed user);
+    event Pending(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
+    event Done(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
+    event Invoice(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
+
+    event PendingBio(uint256 timestamp, address indexed user);
+    event DoneBio(uint256 timestamp, address indexed user);
 
     constructor(
             address gateway_,
@@ -74,7 +76,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
 
         if (action == BIO) {
             bios[recipient] = message;
-            // emit DoneBio(timestamp, recipient);
+            emit DoneBio(timestamp, recipient);
         } else if (action == MINT) {
             if(receipt[timestamp].active) {
                 (string memory tChain, address sender, string memory destinationChain, address destinationAddress,
@@ -105,6 +107,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
                     _setTokenURI(newTokenId, dataNFT[1536000000]);
                 }
                 receipt[timestamp].valid = true;
+                emit Invoice(timestamp, destinationChain, sender, destinationAddress);
             }
         }
     }
@@ -124,7 +127,8 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
         // emit Sponsor(chainName, sender, recipient, tokenSymbol, amount, message);
         // bytes memory _payload = abi.encode(MINT, recipient, tokenId, "");
         gateway.callContract(chainName, chainAddress, abi.encode(MINT, recipient, newTokenId, ""));
-        // emit Done(timestamp, chainName, sender, recipient);
+        string memory chain_ = chainName;
+        emit Done(newTokenId, chain_, sender, recipient);
     }
 
     function contractId() external pure returns (bytes32) {
@@ -176,8 +180,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
             }
         }
         gateway.callContractWithToken(destinationChain, destinationContract, payload, symbol, amount);
-        emit Pending(block.timestamp, destinationChain, address(msg.sender), destinationAddress);
-        // emit Sponsor(destinationChain, destinationContract, destinationAddress, symbol, amount, message);
+        emit Pending(newTokenId, destinationChain, address(msg.sender), destinationAddress);
     }
 
     function setBio(
@@ -198,6 +201,6 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
             );
         }
         gateway.callContract(destinationChain, destinationContract, payload);
-        // emit PendingBio(timestamp, destinationAddress);
+        emit PendingBio(timestamp, destinationAddress);
     }
 }

@@ -13,7 +13,7 @@
     "tokens": {
       "ausdc": "aUSDC"
     },
-    "bakeryExecutable": "0x7c45825fbf43712A71Ad32f36E0a352f0a42d3D0",
+    "bakeryExecutable": "0x9C6D29079Ba879423F2E4f91eBec7Aa045E3298a",
     "blockExplorer": "https://goerli.etherscan.io/"
   },
   {
@@ -30,7 +30,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
+    "bakeryExecutable": "0x3A652A9E7c406CCF1CF9A84A53d853E6E14E3f9b",
     "blockExplorer": "https://testnet.snowtrace.io/"
   },
   {
@@ -47,7 +47,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
+    "bakeryExecutable": "0x3A652A9E7c406CCF1CF9A84A53d853E6E14E3f9b",
     "blockExplorer": "https://testnet.ftmscan.com/"
   },
   {
@@ -64,7 +64,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
+    "bakeryExecutable": "0x3A652A9E7c406CCF1CF9A84A53d853E6E14E3f9b",
     "blockExplorer": "https://mumbai.polygonscan.com/"
   },
   {
@@ -81,7 +81,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0xAE02699E7FF224E35941b8C80540EEFf824765f4",
+    "bakeryExecutable": "0x1fb0DeB4495F0dd742EFf332A2EA6C21Fb56FE0c",
     "blockExplorer": "https://moonbase.moonscan.io/"
   },
   {
@@ -98,7 +98,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x1fb0DeB4495F0dd742EFf332A2EA6C21Fb56FE0c",
+    "bakeryExecutable": "0xAB2173D77F27031f6e0bb8bc7E53499Db19D29d5",
     "blockExplorer": "https://testnet.bscscan.com/"
   }
 ]
