@@ -134,7 +134,7 @@ My profile isn't verified but you still can contribute.
 **Note**: All contributions will be redirected to the moonbase chain.
                 `);
                 setThumbnail(makeBlockie(resolvedAddress));
-                setSelectedChain(chain)
+                setSelectedChain(moonbeam)
                 setName((await name));
 
                 return;
@@ -165,7 +165,7 @@ My profile isn't verified but you still can contribute.
     const onClick = async () => {
         setLoading(true);
         try {
-            const cookiesUSDC = ethers.utils.parseUnits((cookies).toString(), 6 )   // BigNumber.from(cookies).mul(1e6);
+            const cookiesUSDC = ethers.utils.parseUnits((cookies).toString(), 5 )   // BigNumber.from(cookies).mul(1e6);
             console.log(cookiesUSDC);
 
             const tokenAddress = await gatewayContract.tokenAddresses("aUSDC");
@@ -184,10 +184,15 @@ My profile isn't verified but you still can contribute.
                 chain.denomination.toUpperCase(),
                 selectedChain.denomination.toUpperCase(),
                 chain.tokenSymbol);
+
+            const gasPriceRemote = await estimateGasFee(
+                selectedChain.denomination.toUpperCase(),
+                chain.denomination.toUpperCase(),
+                chain.tokenSymbol);
             console.log(gasPrice)
             const tx = await contract.send(selectedChain.denomination, selectedChain.bakeryExecutable, address,
-                "aUSDC", cookiesUSDC, quote, {
-                    value: gasPrice,
+                "aUSDC", cookiesUSDC, quote, gasPrice, {
+                    value: BigNumber.from(gasPrice).add(BigNumber.from(gasPriceRemote)),
             });
             setTx(tx.hash)
 

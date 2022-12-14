@@ -3,6 +3,7 @@
     "name": "Ethereum Goerli",
     "denomination": "Ethereum",
     "chainId": 5,
+    "chainName": "ethereum-2",
     "rpc": "https://goerli.infura.io/v3/a4812158fbab4a2aaa849e6f4a6dc605",
     "gateway": "0xe432150cce91c13a887f7D836923d5597adD8E31",
     "constAddressDeployer": "0x98b2920d53612483f91f12ed7754e51b4a77919e",
@@ -12,12 +13,13 @@
     "tokens": {
       "ausdc": "aUSDC"
     },
-    "bakeryExecutable": "0xFD2f1A176fCaA103c8eCC9916BaCf98a916b703e",
+    "bakeryExecutable": "0x7c45825fbf43712A71Ad32f36E0a352f0a42d3D0",
     "blockExplorer": "https://goerli.etherscan.io/"
   },
   {
     "name": "Avalanche Fuji",
     "denomination": "Avalanche",
+    "chainName": "Avalanche",
     "chainId": 43113,
     "rpc": "https://rpc.ankr.com/avalanche_fuji",
     "gateway": "0xC249632c2D40b9001FE907806902f63038B737Ab",
@@ -28,12 +30,13 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0xFD2f1A176fCaA103c8eCC9916BaCf98a916b703e",
+    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
     "blockExplorer": "https://testnet.snowtrace.io/"
   },
   {
     "name": "Fantom Testnet",
     "denomination": "Fantom",
+    "chainName": "Fantom",
     "chainId": 4002,
     "gateway": "0x97837985Ec0494E7b9C71f5D3f9250188477ae14",
     "rpc": "https://rpc.ankr.com/fantom_testnet",
@@ -44,12 +47,13 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0xFD2f1A176fCaA103c8eCC9916BaCf98a916b703e",
+    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
     "blockExplorer": "https://testnet.ftmscan.com/"
   },
   {
     "name": "Polygon Mumbai",
     "denomination": "Polygon",
+    "chainName": "Polygon",
     "chainId": 80001,
     "gateway": "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B",
     "rpc": "https://rpc.ankr.com/polygon_mumbai",
@@ -60,13 +64,14 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0xFD2f1A176fCaA103c8eCC9916BaCf98a916b703e",
+    "bakeryExecutable": "0x569915860fd5df30b41Cf4aF652eaBA3b2b87c9F",
     "blockExplorer": "https://mumbai.polygonscan.com/"
   },
   {
     "name": "Moonbase Alpha",
     "denomination": "Moonbeam",
     "chainId": 1287,
+    "chainName": "Moonbeam",
     "gateway": "0x5769D84DD62a6fD969856c75c7D321b84d455929",
     "rpc": "https://rpc.api.moonbase.moonbeam.network",
     "gasReceiver": "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6",
@@ -76,12 +81,13 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x5161Af0b32378aCDe41c40165a7aE202C14Ad291",
+    "bakeryExecutable": "0xAE02699E7FF224E35941b8C80540EEFf824765f4",
     "blockExplorer": "https://moonbase.moonscan.io/"
   },
   {
     "name": "BNB Chain Testnet",
     "denomination": "binance",
+    "chainName": "binance",
     "chainId": 97,
     "gateway": "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0",
     "rpc": "https://data-seed-prebsc-1-s1.binance.org:8545",
@@ -92,7 +98,7 @@
     "tokens": {
       "uusdc": "aUSDC"
     },
-    "bakeryExecutable": "0x7a457659d83E2dBcbE2fD7Bfa0dbab9b898F0A37",
+    "bakeryExecutable": "0x1fb0DeB4495F0dd742EFf332A2EA6C21Fb56FE0c",
     "blockExplorer": "https://testnet.bscscan.com/"
   }
 ]

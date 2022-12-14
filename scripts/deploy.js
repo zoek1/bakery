@@ -5,11 +5,12 @@ const { utils: { setJSON}, testnetInfo } = require('@axelar-network/axelar-local
 const {  Wallet, getDefaultProvider } = require('ethers');
 const { utils: { deployContract } } = require('@axelar-network/axelar-local-dev');
 const BakeryExecutable = require('../artifacts/contracts/Bakery.sol/BakeryExecutable.json');
+const {EvmChain} = require("@axelar-network/axelarjs-sdk");
 
 
 async function deployBakery(chain, wallet) {
     console.log(`Deploying DistributionExecutable for ${chain.name}.`);
-    const contract = await deployContract(wallet, BakeryExecutable, [chain.gateway, chain.gasReceiver]);
+    const contract = await deployContract(wallet, BakeryExecutable, [chain.gateway, chain.gasReceiver, chain.denomination]);
     chain.bakeryExecutable = contract.address;
     console.log(`Deployed DistributionExecutable for ${chain.name} at ${chain.bakeryExecutable}.`);
 }
