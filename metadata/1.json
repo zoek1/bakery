@@ -1,0 +1,12 @@
+{
+  "name": "Single Cookie",
+  "description": "The loneliest cookie in the world",
+  "external_url": "https://buymeacookie.gordian.dev/nft/1",
+  "image": "https://bafybeigx525cp4hyd3uedoc3qylqivp53fjcvk5oxtlkpv6pbpcvtc7lau.ipfs.w3s.link/1.jpg",
+  "attributes": [
+    {
+      "trait_type": "Base",
+      "value": 6
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Xmas",
+  "description": "Cookie Holidays",
+  "external_url": "https://buymeacookie.gordian.dev/nft/4",
+  "image": "https://bafybeicrwbjybjscz77c7dz7pgxethwaasucaktgoo7o7gqubwzmovyrpe.ipfs.w3s.link/4.jpg",
+  "attributes": [
+    {
+      "trait_type": "Base",
+      "value": 24
+    }
+  ]
+}

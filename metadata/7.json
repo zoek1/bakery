@@ -1,0 +1,12 @@
+{
+  "name": "Fortune cookie",
+  "description": "Fortune is an enchantment applied to mining and digging tools that increases the number and/or chances of specific item drops.",
+  "external_url": "https://buymeacookie.gordian.dev/nft/7",
+  "image": "https://bafybeiehyyurrileillcovssxwdmu5ha2pogxdx6izwzy4mkhqjfertliy.ipfs.w3s.link/7.jpg",
+  "attributes": [
+    {
+      "trait_type": "Base",
+      "value": 192
+    }
+  ]
+}

@@ -18,8 +18,8 @@ export const estimateGasFee = async (srcChain, destChain, symbol) => {
     EvmChain[srcChain],
     EvmChain[destChain],
     GasToken[symbol],
-    400000,
-    2
+    700000,
+    5
   );
 }
 
@@ -29,7 +29,7 @@ const getName = async (address) => {
 }
 
 const Activity = (props) => {
-    const {event} = props
+    const {event, done, invoice} = props
     const [name, setName] = useState(event.args.sponsor);
 
     useEffect(() => {
@@ -51,12 +51,12 @@ const Activity = (props) => {
                     <label>sponsored you  {  event.args.amount.div(1e6).toString() } cookies. ({event.args.amount.div(1e6).toString()} aUSDC)</label>
                 </div>
             </div>
-          <p style={{fontSize: "1.3em", marginTop: "1em"}}>{event.args.payload}</p>
-            { /*
-            <div className="card-actions justify-end">
-            <button className="btn btn-ghost" onClick={() => window.open(`${chain.blockExplorer}tx/${event.transactionHash}`, '_blank').focus()}>See TX</button>
+          <p style={{fontSize: "1.3em", marginTop: "1em"}}>{event.args.message}</p>
+          <div className="card-actions justify-end">
+            <button className="btn btn-ghost" onClick={() => window.open(`${event.chain.blockExplorer}tx/${event.transactionHash}`, '_blank').focus()}>See TX</button>
+            { /* <button className={`btn ${done ? "btn-success": "btn-ghost"}`} disabled={true}>{done ? "Done" : "Sync..."}</button> */ }
+            <button className={`btn ${invoice ? "btn-success": "btn-ghost"}`} onClick={() => window.open(`${event.chain.blockExplorer}token/${event.chain.bakeryExecutable}?a=${event.args.tokenId}`, '_blank').focus()} disabled={invoice}>Invoice</button>
           </div>
-            */ }
         </div>
       </div>
 }
@@ -84,11 +84,12 @@ export default function Tip(props) {
     const [message, setMessage] = useState({visible: false, success: true})
     const [tx, setTx] = useState("")
     const [events, setEvents] = useState([])
-    const moonbeam = chains.find(chain => chain.chainId === 1287)
+    const [done, setDone] = useState([])
+    const [invoice, setInvoice] = useState([])
+    const moonbeam = chains.find(chain => chain.chainId === 80001)
     const cookiePrice = 0.20;
 
     const navigator = useNavigate();
-
     const getName = async (address) => {
         console.log(address)
         const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/2913dca9d6d54e4e85a3235a96ecc29c");
@@ -101,13 +102,21 @@ export default function Tip(props) {
     }
 
     const getEvents = async (chain, address) => {
+        const fromBlock = -999;
         try {
             const userSelectedProvider = new ethers.providers.JsonRpcProvider(chain.rpc);
             const userSelectedContract = new ethers.Contract(chain.bakeryExecutable, BakeryExecutableContract.abi, userSelectedProvider);
-            const filterFrom = userSelectedContract.filters.Sponsor(null, null, address)
-            const events = await userSelectedContract.queryFilter(filterFrom, -4999, "latest");
-            return events
+            const filterFrom = userSelectedContract.filters.Pending(null, null, null, address)
+            const events = await userSelectedContract.queryFilter(filterFrom, fromBlock, "latest");
+            const filterDoneFrom = userSelectedContract.filters.Done()
+            const doneEvents = await userSelectedContract.queryFilter(filterDoneFrom, fromBlock, "latest");
+            const filterInvoiceFrom = userSelectedContract.filters.Invoice(null, null, null, address)
+            const invoiceEvents = await userSelectedContract.queryFilter(filterInvoiceFrom, fromBlock, "latest");
+            setDone([...done, ...doneEvents.map(event => event.args.tokenId)])
+            setInvoice([...invoice, ...invoiceEvents.map(event => event.args.tokenId)])
+            return events.map(event => {event.chain = chain; return event});
         } catch (e) {
+            console.log(e)
             return []
         }
     }
@@ -120,8 +129,15 @@ export default function Tip(props) {
             const resolvedAddress = ethers.utils.isAddress(address) ? address : await resolveENS(address);
             const provider = new ethers.providers.JsonRpcProvider(moonbeam.rpc);
             const moonbeamConntract = new ethers.Contract(moonbeam.bakeryExecutable, BakeryExecutableContract.abi, provider);
+
+            const eventArrayPromises = await Promise.all(chains.map(chain => getEvents(chain, address)))
+            console.log(eventArrayPromises)
+            const events = [].concat(...eventArrayPromises);
+            setEvents(events)
+
             const res = await moonbeamConntract.bios(resolvedAddress);
             const cid = getCidFrom(res);
+
 
             if (!cid) {
                 const name = await getName(resolvedAddress)
@@ -147,12 +163,7 @@ My profile isn't verified but you still can contribute.
             setBio(data.bio);
             setThumbnail(data.thumbnail);
             setSelectedChain(selectedChain)
-            const eventArrayPromises = await Promise.all(chains.map(chain => getEvents(chain, address)))
-            console.log(eventArrayPromises)
-            const events = [].concat(...eventArrayPromises);
-            console.log(selectedChain)
-            setEvents(events)
-            console.log(events)
+
         }
         _();
     }, [address])
@@ -165,7 +176,7 @@ My profile isn't verified but you still can contribute.
     const onClick = async () => {
         setLoading(true);
         try {
-            const cookiesUSDC = ethers.utils.parseUnits((cookies).toString(), 5 )   // BigNumber.from(cookies).mul(1e6);
+            const cookiesUSDC = ethers.utils.parseUnits((cookies).toString(), 6 )   // BigNumber.from(cookies).mul(1e6);
             console.log(cookiesUSDC);
 
             const tokenAddress = await gatewayContract.tokenAddresses("aUSDC");
@@ -264,7 +275,10 @@ My profile isn't verified but you still can contribute.
         </div>
             <div style={{width: "100%", marginTop: "60px"}}>
                 { events.map((event) => {
-                    return <Activity event={event} selectedChain={selectedChain} />
+                    return <Activity event={event}
+                                     invoice={invoice.indexOf(event.args.tokenId) !== -1}
+                                     done={done.indexOf(event.args.tokenId) !== -1}
+                                     selectedChain={selectedChain} />
                   })
                 }
             </div>
@@ -298,7 +312,7 @@ My profile isn't verified but you still can contribute.
                 </div>
                 <div className="card-actions">
                     {!loading ?
-                        <button className="btn btn-secondary" disabled={!account} onClick={onClick}>Buy Now</button>
+                        <button className="btn btn-secondary" disabled={!account || !chain.denomination} onClick={onClick}>Buy Now</button>
                         : <progress style={{marginTop: "50px"}} className="progress progress-secondary w-56"></progress>
                     }
                 </div>

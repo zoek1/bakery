@@ -22,8 +22,8 @@ export const estimateGasFee = async (srcChain, destChain, symbol) => {
     EvmChain[srcChain],
     EvmChain[destChain],
     GasToken[symbol],
-    400000,
-    2
+    700000,
+    5
   );
 }
 
@@ -41,12 +41,72 @@ export default function Profile(props) {
     const [cid, setCid] = useState(null);
     const [loading, setLoading] = useState(false);
     const [thumbnail, setThumbnail] = useState("")
-    const [selectedChain, setChain] = useState(1287)
+    const [selectedChain, setChain] = useState(80001)
     const [message, setMessage] = useState({visible: false, success: true})
+    const [retrieving, setRetrieving] = useState(false)
+
     const [tx, setTx] = useState("")
-    const moonbeam = chains.find(chain => chain.chainId === 1287)
+    const defaultChain = chains.find(chain => chain.chainId === 80001)
 
     const navigator = useNavigate();
+
+
+    const getEvents = async (chain, address) => {
+        const fromBlock = -999;
+
+        try {
+            const userSelectedProvider = new ethers.providers.JsonRpcProvider(chain.rpc);
+            const userSelectedContract = new ethers.Contract(chain.bakeryExecutable, BakeryExecutableContract.abi, userSelectedProvider);
+            const filterPendingFrom = userSelectedContract.filters.PendingBio(null, address)
+            const pendingEvents = await userSelectedContract.queryFilter(filterPendingFrom, fromBlock, "latest");
+            let events;
+            if (defaultChain.chainId === chain.chainId) {
+                const filterFrom = userSelectedContract.filters.DoneBio(null, address)
+                events = await userSelectedContract.queryFilter(filterFrom, fromBlock, "latest");
+            } else { events = []}
+
+            return [pendingEvents, events]
+        } catch (e) {
+            console.log(e)
+            return [[], []]
+        }
+    }
+
+    const listenEvents = async (timeout=true) => {
+        console.log("Retrieving events")
+
+        if (!account || retrieving) {
+            setTimeout(listenEvents, 60000)
+            return;
+        }
+        setRetrieving(true);
+        const eventArrayPromises = await Promise.all(chains.map(chain => getEvents(chain, account)))
+        const pending = eventArrayPromises
+            .map(entry => entry[0])
+            .reduce((prev, current) => [...prev, ...current], [])
+            .map(event => event.args.timestamp.toNumber())
+        const done = eventArrayPromises
+            .map(entry => entry[1])
+            .reduce((prev, current) => [...prev, ...current], [])
+            .map(event => event.args.timestamp.toNumber())
+        console.log(pending, done)
+        if (Math.max(...pending) > Math.max(...done) && !loading ) {
+            setMessage("Wait a few minutes while transaction is mined in destination blockchain")
+            setLoading(true)
+        } else if (Math.max(...pending) <= Math.max(...done) && loading) {
+            setLoading(false)
+        }
+
+        if (timeout) {
+            setTimeout(listenEvents, 60000)
+        }
+
+        setRetrieving(false);
+    }
+
+    useEffect(() => {
+        setTimeout(listenEvents, 600)
+    }, []);
 
     useEffect(() => {
         const _ = async () =>
@@ -57,18 +117,20 @@ export default function Profile(props) {
                 setThumbnail("");
                 return;
             }
-            const provider = new ethers.providers.JsonRpcProvider(moonbeam.rpc);
-            const moonbeamConntract = new ethers.Contract(moonbeam.bakeryExecutable, BakeryExecutableContract.abi, provider);
+
+
+            const provider = new ethers.providers.JsonRpcProvider(defaultChain.rpc);
+            const moonbeamConntract = new ethers.Contract(defaultChain.bakeryExecutable, BakeryExecutableContract.abi, provider);
             const res = await moonbeamConntract.bios(account);
             const cid = getCidFrom(res);
             setCid(cid);
-
+            if (!cid) return;
             const data = await getJSON(cid);
 
             setName(data.name);
             setBio(data.bio);
             setThumbnail(data.thumbnail);
-            setChain(data.chain ||1287)
+            setChain(data.chain || 80001)
         }
         _();
     }, [account])
@@ -100,10 +162,10 @@ export default function Profile(props) {
             // const gasLimit = 3e6;
             const gasPrice = await estimateGasFee(
                 chain.denomination.toUpperCase(),
-                moonbeam.denomination.toUpperCase(),
+                defaultChain.denomination.toUpperCase(),
                 chain.tokenSymbol);
             console.log(gasPrice)
-            const tx = await contract.setBio(moonbeam.denomination, moonbeam.bakeryExecutable, account, `ipfs://${bioCid}`, {
+            const tx = await contract.setBio(defaultChain.denomination, defaultChain.bakeryExecutable, account, `ipfs://${bioCid}`, {
                 value: gasPrice,
             });
             setTx(tx.hash)
@@ -113,8 +175,9 @@ export default function Profile(props) {
                 visible: true,
                 success: true
             })
-            await tx.wait(1);
+            await tx.wait(2);
             console.log(tx);
+            await listenEvents(false);
         } catch (e) {
             setMessage({
                 title: "Transaction failed!",

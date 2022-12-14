@@ -1,0 +1,12 @@
+{
+  "name": "Cookie Monster",
+  "description": "Galletas!!!!",
+  "external_url": "https://buymeacookie.gordian.dev/nft/5",
+  "image": "https://bafybeiccruokwcqvoafwebxhprxtbylyn2mhlpb3csbxgh4q4otx4ohh5y.ipfs.w3s.link/5.jpg",
+  "attributes": [
+    {
+      "trait_type": "Base",
+      "value": 48
+    }
+  ]
+}

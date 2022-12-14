@@ -39,7 +39,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
     error NotEnoughValueForGas();
 
     // event Sponsor(string chain, address indexed sponsor, address indexed recipient, string tokenSymbol, uint256 amount, string payload);
-    event Pending(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
+    event Pending(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient, string tokenSymbol, uint256 amount, string message);
     event Done(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
     event Invoice(uint256 tokenId, string chain, address indexed sponsor, address indexed recipient);
 
@@ -52,16 +52,16 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
             string memory thisChain_
     )  ERC721('Cookie Monster NFT', 'QKY') AxelarExecutable(gateway_) {
         gasReceiver = IAxelarGasService(gasReceiver_);
-        dataNFT[1000000] = "ipfs://";
-        dataNFT[6000000] = "ipfs://";
-        dataNFT[12000000] = "ipfs://";
-        dataNFT[24000000] = "ipfs://";
-        dataNFT[48000000] = "ipfs://";
-        dataNFT[96000000] = "ipfs://";
-        dataNFT[192000000] = "ipfs://";
-        dataNFT[384000000] = "ipfs://";
-        dataNFT[768000000] = "ipfs://";
-        dataNFT[1536000000] = "ipfs://";
+        dataNFT[1000000] = "https://bafybeibs6mruwygyt5mlgyggch2ei2crldrpaxu3u22tkz2rt5ksgam6vq.ipfs.w3s.link/1.json";
+        dataNFT[6000000] = "https://bafybeidjsdayqwwbikt5xv2cu2fxgk3y5kfu5hwa3a3zvicf2zh76pzk4q.ipfs.w3s.link/2.json";
+        dataNFT[12000000] = "https://bafybeid7ec2tyx6jw2p3abpbjeshwkix7fg7pmqjduqy2sbvpjtryxigjm.ipfs.w3s.link/3.json";
+        dataNFT[24000000] = "https://bafybeihfxq7ehvswdtg4ivserfwiptzf6ttr5aldfwqd5avmoabkczp2je.ipfs.w3s.link/4.json";
+        dataNFT[48000000] = "https://bafybeibysf7rtblveccmkl6fnau7ct7vjbovehaas262azhpyetpmq5noa.ipfs.w3s.link/5.json";
+        dataNFT[96000000] = "https://bafybeig7apy5lsy4lptuuume4lfg77iad5k4edwylkk6yqkhzp2w2f5nde.ipfs.w3s.link/6.json";
+        dataNFT[192000000] = "https://bafybeidiokbp6bni7ea2cffsg6jt6fjll5hh7ymegnwbcp4ynhioegrc5y.ipfs.w3s.link/7.json";
+        dataNFT[384000000] = "https://bafybeihlfdskoy6itssngwo2e5nhj5gdhz4yxvphls2pwdffksyxgqx7va.ipfs.w3s.link/8.json";
+        dataNFT[768000000] = "https://bafybeiewd3db6ebjmus5lyrs4rtcqf5jeuhl753uc7dxnp4rd3p7dcv7xu.ipfs.w3s.link/9.json";
+        dataNFT[1536000000] = "https://bafybeichuqo56666gpe42xuqcgm5wnq2sc4dsgajmeqg6r2cjozdcnzfiu.ipfs.w3s.link/10.json";
 
         thisChain = thisChain_;
     }
@@ -76,7 +76,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
 
         if (action == BIO) {
             bios[recipient] = message;
-            emit DoneBio(timestamp, recipient);
+            emit DoneBio(block.timestamp, recipient);
         } else if (action == MINT) {
             if(receipt[timestamp].active) {
                 (string memory tChain, address sender, string memory destinationChain, address destinationAddress,
@@ -180,7 +180,7 @@ contract BakeryExecutable is ERC721URIStorage, AxelarExecutable {
             }
         }
         gateway.callContractWithToken(destinationChain, destinationContract, payload, symbol, amount);
-        emit Pending(newTokenId, destinationChain, address(msg.sender), destinationAddress);
+        emit Pending(newTokenId, destinationChain, address(msg.sender), destinationAddress, symbol, amount, message);
     }
 
     function setBio(
