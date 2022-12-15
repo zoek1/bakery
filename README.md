@@ -5,6 +5,9 @@
 
 Give your audience an easy way to say thanks.
 
+## Video Demo
+WIP
+
 ## Setup
 ```
 yarn
@@ -63,6 +66,14 @@ yarn start
 [!["Buy Me A Cookie"](https://github.com/zoek1/bakery/raw/master/badge.png)](https://buymeacookie.gordian.dev/vitalik.eth)
 ```
 
+## User Interactions
+
+![](screenshots/landing.png)
+![](screenshots/anonymous.png)
+![](screenshots/profile.png)
+![](screenshots/cookie.png)
+
+
 ## Backlog
 **Phase 1**
 - [X] As user I can create a profile from any chain (using Axelars GMP)
@@ -75,6 +86,7 @@ yarn start
 - [X] As user I get a badge to include in my repository
 
 **Phase 2**
-- [ ] As sponsor I receive one NFT for contribute to X profile using Axelars GMP
+- [X] As sponsor I receive one NFT for contribute to X profile using Axelars GMP
 - [ ] As user I can configure reward and memberships for certain contributions using Axelars GMP
 - [ ] As sponsor I can set recurrent contributions
+- [ ] Add widget to embedd in sites
