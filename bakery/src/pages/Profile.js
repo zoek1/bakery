@@ -115,6 +115,7 @@ export default function Profile(props) {
                 setName("");
                 setBio("");
                 setThumbnail("");
+                setLoading(false);
                 return;
             }
 
@@ -193,6 +194,18 @@ export default function Profile(props) {
     const openTx = () => {
         window.open(`${chain.blockExplorer}tx/${tx}`, '_blank').focus();
     }
+
+    const text = `<a href="https://buymeacookie.gordian.dev/${account}" target="_blank"><img src="https://github.com/zoek1/bakery/raw/master/badge.png" alt="Buy Me A Cookie" style="height: 41px !important;width: 174px !important;" ></a>`
+
+    const copyToClipboard = () => {
+      const textarea = document.createElement('textarea');
+      document.body.appendChild(textarea);
+      textarea.value = text;
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    };
 
     const alert = <div className={`alert  ${message.success ?  "alert-success" : " alert-error"} shadow-lg`} style={{width: "60%", marginTop: "30px"}}>
           <div>
@@ -288,12 +301,23 @@ export default function Profile(props) {
             }
             { !loading
                 ? <button onClick={saveIPFS}
-                        disabled={loading}
+                        disabled={loading  || !chain?.denomination}
                         className="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
                         style={{marginTop: "50px"}}>Save Profile</button>
                 : <progress style={{marginTop: "50px"}} className="progress progress-secondary w-56"></progress>
             }
         </div>
+       { account ?
+       <div style={{minWidth: "60%", marginTop: "60px"}} >
+           <a href={`https://buymeacookie.gordian.dev/${account}`} target="_blank"><img src="https://github.com/zoek1/bakery/raw/master/badge.png" alt="Buy Me A Cookie" style={{height: "41px !important", width: "174px !important"}} /></a>
+           <div className="form-control">
+                <label className="label">
+                    <span className="label-text">Add to site or README</span>
+                </label>
+                <textarea  style={{width: "100%"}}  className="textarea textarea-bordered" >{ text }</textarea>
+           </div>
+           <button className="btn btn-primary" onClick={copyToClipboard} style={{marginTop: "30px"}}>Copy to Clipboard</button>
+       </div> : <></> }
 
     </div>
     </>;
