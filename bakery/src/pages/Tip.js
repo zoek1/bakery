@@ -43,11 +43,11 @@ const Activity = (props) => {
     return <div className="card mt-5 shadow-xl">
         <div className="card-body">
             <div className="flex">
-                <div style={{ width: "4em" }} className="mr-2">
+                <div style={{ width: "4em", marginTop: "14px" }} className="mr-2">
                     <img src={makeBlockie(event.args.sponsor)} />
                 </div>
                 <div>
-                    <label style={{fontWeight: "bold"}} className="label">{name}</label>
+                    <label style={{fontWeight: "bold"}} className="label">{name} <br />{event.chain.name}</label>
                     <label>sponsored you  {  event.args.amount.div(1e6).toString() } cookies. ({event.args.amount.div(1e6).toString()} aUSDC)</label>
                 </div>
             </div>
@@ -61,9 +61,23 @@ const Activity = (props) => {
       </div>
 }
 
+const getProviders = () => {
+    const instances = chains.map((chain) => {
+        const provider = new ethers.providers.JsonRpcProvider(chain.rpc);
+        const contract = new ethers.Contract(chain.bakeryExecutable, BakeryExecutableContract.abi, provider);
+
+        return [chain.chainId, {
+            provider,
+            contract
+        }]
+    })
+
+    return Object.fromEntries(instances);
+}
+
 
 export default function Tip(props) {
-    let { address } = useParams();
+    let { _address } = useParams();
 
     const {
         contract,
@@ -75,6 +89,8 @@ export default function Tip(props) {
         navbar
     } = props;
     const [bio, setBio] = useState("");
+    const [providers, _] = useState(getProviders())
+    const [address, setAddress] = useState(_address);
     const [name, setName] = useState("");
     const [selectedChain, setSelectedChain] = useState({});
     const [loading, setLoading] = useState(false);
@@ -97,22 +113,23 @@ export default function Tip(props) {
     }
 
     const resolveENS = async (ens) => {
+        console.log(ens)
         const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/2913dca9d6d54e4e85a3235a96ecc29c");
         return await provider.resolveName(ens);
     }
 
     const getEvents = async (chain, address) => {
-        const fromBlock = -999;
+        const fromBlock = [80001, 43113, 4002].indexOf(chain.chainId) !== -1 ? -999 : -4900;
+        if (!ethers.utils.isAddress(address)) return [];
         try {
-            const userSelectedProvider = new ethers.providers.JsonRpcProvider(chain.rpc);
-            const userSelectedContract = new ethers.Contract(chain.bakeryExecutable, BakeryExecutableContract.abi, userSelectedProvider);
+            const userSelectedContract = providers[chain.chainId].contract;
             const filterFrom = userSelectedContract.filters.Pending(null, null, null, address)
             const events = await userSelectedContract.queryFilter(filterFrom, fromBlock, "latest");
-            const filterDoneFrom = userSelectedContract.filters.Done()
-            const doneEvents = await userSelectedContract.queryFilter(filterDoneFrom, fromBlock, "latest");
+            // const filterDoneFrom = userSelectedContract.filters.Done()
+            // const doneEvents = await userSelectedContract.queryFilter(filterDoneFrom, fromBlock, "latest");
             const filterInvoiceFrom = userSelectedContract.filters.Invoice(null, null, null, address)
             const invoiceEvents = await userSelectedContract.queryFilter(filterInvoiceFrom, fromBlock, "latest");
-            setDone([...done, ...doneEvents.map(event => event.args.tokenId)])
+            // setDone([...done, ...doneEvents.map(event => event.args.tokenId)])
             setInvoice([...invoice, ...invoiceEvents.map(event => event.args.tokenId)])
             return events.map(event => {event.chain = chain; return event});
         } catch (e) {
@@ -121,37 +138,49 @@ export default function Tip(props) {
         }
     }
 
-    useEffect(() => {
-        const _ = async () =>
-        {
-            if (!address) return;
-
-            const resolvedAddress = ethers.utils.isAddress(address) ? address : await resolveENS(address);
-            const provider = new ethers.providers.JsonRpcProvider(moonbeam.rpc);
-            const moonbeamConntract = new ethers.Contract(moonbeam.bakeryExecutable, BakeryExecutableContract.abi, provider);
-
-            const eventArrayPromises = await Promise.all(chains.map(chain => getEvents(chain, address)))
+    const updateLogs = async (address) => {
+        const eventArrayPromises = await Promise.all(chains.map(chain => getEvents(chain, address)))
             console.log(eventArrayPromises)
             const events = [].concat(...eventArrayPromises);
             setEvents(events)
+
+    }
+
+    useEffect(() => {
+        const _ = async () =>
+        {
+            if (!_address) return;
+            setEvents([])
+
+            const resolvedAddress = ethers.utils.isAddress(_address) ? _address : await resolveENS(_address);
+            if (!resolvedAddress) {
+                setBio("# 203 Invalid User or Address format")
+                return
+            }
+            setAddress(resolvedAddress)
+            console.log(resolvedAddress)
+            const provider = new ethers.providers.JsonRpcProvider(moonbeam.rpc);
+            const moonbeamConntract = new ethers.Contract(moonbeam.bakeryExecutable, BakeryExecutableContract.abi, provider);
+
 
             const res = await moonbeamConntract.bios(resolvedAddress);
             const cid = getCidFrom(res);
 
 
             if (!cid) {
-                const name = await getName(resolvedAddress)
+                const name = ethers.utils.isAddress(_address) ? await getName(_address) : _address;
                 setBio(`# Sponsor me
                 
 My profile isn't verified but you still can contribute.
 
-**Address**: ${address}
+**Address**: ${resolvedAddress}
 
 **Note**: All contributions will be redirected to the moonbase chain.
                 `);
                 setThumbnail(makeBlockie(resolvedAddress));
                 setSelectedChain(moonbeam)
-                setName((await name));
+                setName(name);
+                await updateLogs(resolvedAddress);
 
                 return;
             }
@@ -163,10 +192,10 @@ My profile isn't verified but you still can contribute.
             setBio(data.bio);
             setThumbnail(data.thumbnail);
             setSelectedChain(selectedChain)
-
+            await updateLogs(resolvedAddress);
         }
         _();
-    }, [address])
+    }, [_address])
 
     const openTx = () => {
         window.open(`${chain.blockExplorer}tx/${tx}`, '_blank').focus();

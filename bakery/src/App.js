@@ -36,7 +36,7 @@ function App() {
       element: <Profile navbar={navbar} account={account} chain={chain} contract={contract} gatewayContract={gatewayContract} signer={signer} />,
     },
     {
-      path: "/:address",
+      path: "/:_address",
       element: <Tip navbar={navbar} account={account} chain={chain} contract={contract} provider={provider}
                     gatewayContract={gatewayContract} signer={signer} />,
     },
