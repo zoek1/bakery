@@ -83,6 +83,9 @@ yarn start
 ![](screenshots/profile.png)
 ### Support verified user and see all contributions
 You get one invoice nft for every contribution you made in the chain you made the contribution!
+The implementation to see invoice is planned in the phase 2, but all NFT Invoice are registered.
+Example: https://goerli.etherscan.io/token/0x76040b4BC87F63C041F9cF87c3262b68D0f78b8C?a=60529387034361429577519350380435008093014593915793362066010911254699636853777#inventory
+
 ![](screenshots/cookie.png)
 
 
@@ -102,3 +105,4 @@ You get one invoice nft for every contribution you made in the chain you made th
 - [ ] As user I can configure reward and memberships for certain contributions using Axelars GMP
 - [ ] As sponsor I can set recurrent contributions
 - [ ] Add widget to embedd in sites
+- [ ] Add my contributions page to display all invoice and NFT i got
