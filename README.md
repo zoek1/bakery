@@ -6,7 +6,7 @@
 Give your audience an easy way to say thanks.
 
 ## Video Demo
-WIP
+https://www.loom.com/share/07de67128bd54a08b082e59773b1d446
 
 ## Setup
 ```
