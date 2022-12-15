@@ -75,10 +75,14 @@ yarn start
 
 
 ## User Interactions
-
+### Search any address (ENS domain are also supported)
 ![](screenshots/landing.png)
+### Support anonymous (not verified) users 
 ![](screenshots/anonymous.png)
+### Create your profile and get verified
 ![](screenshots/profile.png)
+### Support verified user and see all contributions
+You get one invoice nft for every contribution you made in the chain you made the contribution!
 ![](screenshots/cookie.png)
 
 
