@@ -8,20 +8,46 @@ import rehypeHighlight from "rehype-highlight";
 
 import IERC20 from "../artifacts/@axelar-network/axelar-gmp-sdk-solidity/contracts/interfaces/IERC20.sol/IERC20.json";
 import makeBlockie from "ethereum-blockies-base64";
+import {parseEther} from "ethers/lib/utils";
 
 const BakeryExecutableContract = require("../artifacts/contracts/Bakery.sol/BakeryExecutable.json");
 const chains = require("../info/testnet.json")
 
-export const estimateGasFee = async (srcChain, destChain, symbol) => {
+export const estimateGasFee = async (srcChain, destChain, symbol, gasPrice=0) => {
     const axelarQueryApi = new AxelarQueryAPI({ environment: Environment.TESTNET})
-    return await axelarQueryApi.estimateGasFee(
-    EvmChain[srcChain],
-    EvmChain[destChain],
-    GasToken[symbol],
-    700000,
-    5
-  );
+    const sourceChainName = EvmChain[srcChain]
+    const destinationChainName = EvmChain[destChain]
+    const sourceChainTokenSymbol = GasToken[symbol]
+    const gasLimit = 7000;
+    const gasMultiplier = 2;
+    const response = await axelarQueryApi.getNativeGasBaseFee(
+      sourceChainName,
+      destinationChainName,
+      sourceChainTokenSymbol
+    ).catch(() => undefined);
+
+    if (!response) return "0";
+
+    const { baseFee, sourceToken, success } = response;
+
+    if (!success || !baseFee || !sourceToken) return "0";
+    const gasInfo = await axelarQueryApi.getGasInfo(sourceChainName, destinationChainName, sourceChainTokenSymbol);
+    console.log(gasInfo)
+
+    const { gas_price } = sourceToken;
+
+    const destTxFee = parseEther(gas_price || gasPrice).mul(gasLimit);
+    if (gasMultiplier > 1) {
+      return [destTxFee
+        .add(baseFee)
+        .mul(gasMultiplier * 10000)
+        .div(10000)
+        .toString(), gas_price]
+    }
+
+    return [destTxFee.add(baseFee).toString(), gas_price];
 }
+
 
 const getName = async (address) => {
     const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/2913dca9d6d54e4e85a3235a96ecc29c");
@@ -220,15 +246,15 @@ My profile isn't verified but you still can contribute.
             await txApprove.wait(1);
 
             // const gasLimit = 3e6;
-            const gasPrice = await estimateGasFee(
+            const [gasPrice, savePrice] = await estimateGasFee(
                 chain.denomination.toUpperCase(),
                 selectedChain.denomination.toUpperCase(),
                 chain.tokenSymbol);
 
-            const gasPriceRemote = await estimateGasFee(
+            const [gasPriceRemote, _] = await estimateGasFee(
                 selectedChain.denomination.toUpperCase(),
                 chain.denomination.toUpperCase(),
-                chain.tokenSymbol);
+                chain.tokenSymbol, savePrice);
             console.log(gasPrice)
             const tx = await contract.send(selectedChain.denomination, selectedChain.bakeryExecutable, address,
                 "aUSDC", cookiesUSDC, quote, gasPrice, {
