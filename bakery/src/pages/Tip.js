@@ -271,12 +271,21 @@ My profile isn't verified but you still can contribute.
             await tx.wait(2);
             console.log(tx);
         } catch (e) {
-            setMessage({
-                title: "Transaction failed!",
-                desc: "Something was wrong, check the tx logs.",
-                visible: true,
-                success: false
-            })
+            if (e && e.data) {
+                setMessage({
+                    title: "Transaction failed!",
+                    desc: e.data.message,
+                    visible: true,
+                    success: false
+                })
+	    } else {	
+                setMessage({
+                    title: "Transaction failed!",
+                    desc: "Something was wrong, check the tx logs.",
+                    visible: true,
+                    success: false
+                })
+	    }
             console.log(e)
         }
         setLoading(false);
