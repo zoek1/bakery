@@ -65,6 +65,14 @@ yarn start
 ```
 [!["Buy Me A Cookie"](https://github.com/zoek1/bakery/raw/master/badge.png)](https://buymeacookie.gordian.dev/vitalik.eth)
 ```
+## Flow
+### Create or Update Profile
+![](profile.png)
+
+### Make donation and get invoice
+![](tip.png)
+
+
 
 ## User Interactions
 
